@@ -1,0 +1,24 @@
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/authentication
+    username: amirshafri
+    password: 1234
+  flyway:
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    schemas: public
+    enabled: true
+    baselineOnMigrate: true
+feign:
+  client:
+    config:
+      default:
+        logger-level: FULL
+server:
+  port: 8080
