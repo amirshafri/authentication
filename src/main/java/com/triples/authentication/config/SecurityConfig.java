@@ -16,13 +16,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-            .antMatchers("/register", "/static/**")
+            .antMatchers("/register", "/style.css", "/static/**")
             .permitAll() // Allow access to /register and static resources
             .anyRequest()
             .authenticated()
             .and()
             .formLogin()
-            .loginPage("/login") // Define a custom login page URL if needed
+            .loginPage("/custom-login") // Specify your custom login page URL here
             .permitAll()
             .and()
             .logout()
