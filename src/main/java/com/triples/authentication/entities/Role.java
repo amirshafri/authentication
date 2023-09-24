@@ -1,24 +1,24 @@
 package com.triples.authentication.entities;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "roles")
 @Data
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
 
     @Column(nullable = false, unique = true)
     private String name;
-
     // Getters and setters
 
 }

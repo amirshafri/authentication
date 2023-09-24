@@ -1,26 +1,25 @@
 package com.triples.authentication.services;
 
+import com.triples.authentication.dto.UserDto;
 import com.triples.authentication.entities.User;
+import com.triples.authentication.mappers.UserMapper;
 import com.triples.authentication.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class RegistrationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    @Autowired
-    public RegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    public User registerUser(User user) {
+    public boolean registerUser(UserDto userDto) {
         // Encode the user's password before saving it to the database
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        User user = userMapper.toModel(userDto);
+        return userMapper.toDto(userRepository.save(user)).getId() != null;
     }
 }

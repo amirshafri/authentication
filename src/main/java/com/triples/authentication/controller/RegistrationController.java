@@ -1,38 +1,55 @@
 package com.triples.authentication.controller;
 
-import com.triples.authentication.entities.User;
+import com.triples.authentication.dto.UserDto;
+import com.triples.authentication.model.UserRegistration;
 import com.triples.authentication.services.RegistrationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jdk.nashorn.internal.runtime.logging.Logger;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequiredArgsConstructor
 public class RegistrationController {
 
     private final RegistrationService registrationService;
 
-    @Autowired
-    public RegistrationController(RegistrationService registrationService) {
-        this.registrationService = registrationService;
+    @PostMapping("/create-user")
+    @Logger
+    public ResponseEntity<String> registerUser(@RequestBody UserDto userDto) {
+        // Register the user
+        boolean success = registrationService.registerUser(userDto);
+        if (success) {
+            return ResponseEntity.ok("User registered successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to register user");
+        }
     }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User());
-        return "registration";
+        model.addAttribute("userRegistration", new UserRegistration());
+        // You can also add roles to the model if needed
+        // model.addAttribute("roles", rolesList);
+        return "register/registration";
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") User user) {
-        // Add validation logic here if needed
+    public String processRegistration(@ModelAttribute("userRegistration") UserRegistration userRegistration) {
+        // Handle form submission and registration logic here
+        return "redirect:/success"; // Redirect to a success page
+    }
 
-        // Register the user
-        registrationService.registerUser(user);
+    @RequestMapping("/login")
+    public String login() {
+        return "login"; // This returns the view name (registration.html)
+    }
 
-        // Redirect to a success page or login page
-        return "redirect:/login";
+    @GetMapping("/greeting")
+    public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
+        model.addAttribute("name", name);
+        return "greeting";
     }
 }
